@@ -44,9 +44,10 @@ func (s ServiceImpl) Hello(req *dto.HelloReq) (*dto.HelloResp, error) {
 }
 
 func (s ServiceImpl) Predict(req *dto.PredictReq) (*dto.PredictResp, error) {
-	name, err := s.api.Predict(req.ImageName)
+	prediction, err := s.api.Predict(req.ImageName)
 	return &dto.PredictResp{
-		Name: name,
+		Name:       req.ImageName,
+		Prediction: prediction,
 	}, err
 }
 

@@ -19,6 +19,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -36,10 +37,14 @@ type Server struct {
 }
 
 func NewServer(r *mux.Router) Server {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
 	return Server{
 		Srv: &http.Server{
 			Handler: r,
-			Addr:    "0.0.0.0:8000",
+			Addr:    fmt.Sprintf("0.0.0.0:%s", port),
 		},
 		Done: make(chan os.Signal, 1),
 	}
@@ -53,7 +58,7 @@ func (s Server) start() {
 			log.Fatalf("listen: %s\n", err)
 		}
 	}()
-	log.Print("Server Started")
+	log.Print("Server Started: ", s.Srv.Addr)
 	<-s.Done
 	log.Print("Server Stopped")
 }

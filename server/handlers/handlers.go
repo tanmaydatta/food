@@ -43,9 +43,13 @@ func (s ServiceImpl) Hello(req *dto.HelloReq) (*dto.HelloResp, error) {
 	return s.api.Hello(req.Name)
 }
 
-func (s ServiceImpl) Predict() (*dto.PredictResp, error) {
-	name, err := s.api.Predict()
+func (s ServiceImpl) Predict(req *dto.PredictReq) (*dto.PredictResp, error) {
+	name, err := s.api.Predict(req.ImageName)
 	return &dto.PredictResp{
 		Name: name,
 	}, err
+}
+
+func (s ServiceImpl) Upload() {
+
 }

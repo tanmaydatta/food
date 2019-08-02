@@ -20,6 +20,8 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -47,6 +49,7 @@ func makeHTTPEndpoints(service Service) []Endpoint {
 	return []Endpoint{
 		makeHelloEndpoint(service),
 		makePredictEndpoint(service),
+		makeUploadEndpoint(),
 	}
 }
 
@@ -76,16 +79,77 @@ func makeHelloEndpoint(service Service) Endpoint {
 func makePredictEndpoint(service Service) Endpoint {
 	return Endpoint{
 		Path:    "/predict",
-		Methods: []string{http.MethodGet},
+		Methods: []string{http.MethodPost},
 		Handler: func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-
-			resp, err := service.Predict()
+			if r.Body == nil {
+				_, _ = w.Write(makeResponseObject(nil, "Empty body"))
+				return
+			}
+			req := dto.PredictReq{}
+			err := json.NewDecoder(r.Body).Decode(&req)
+			if err != nil {
+				_, _ = w.Write(makeResponseObject(nil, err.Error()))
+				return
+			}
+			resp, err := service.Predict(&req)
 			if err != nil {
 				_, _ = w.Write(makeResponseObject(nil, err.Error()))
 				return
 			}
 			_, _ = w.Write(makeResponseObject(resp, nil))
+		},
+	}
+}
+
+func makeUploadEndpoint() Endpoint {
+	return Endpoint{
+		Path:    "/upload",
+		Methods: []string{http.MethodPost},
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+
+			// Parse our multipart form, 10 << 20 specifies a maximum
+			// upload of 10 MB files.
+			err := r.ParseMultipartForm(10 << 20)
+			if err != nil {
+				_, _ = w.Write(makeResponseObject(nil, err.Error()))
+				return
+			}
+			// FormFile returns the first file for the given key `myFile`
+			// it also returns the FileHeader so we can get the Filename,
+			// the Header and the size of the file
+			file, _, err := r.FormFile("image")
+			if err != nil {
+				fmt.Println("Error Retrieving the File")
+				fmt.Println(err)
+				_, _ = w.Write(makeResponseObject(nil, err.Error()))
+				return
+			}
+			defer file.Close()
+
+			// Create a temporary file within our temp-images directory that follows
+			// a particular naming pattern
+			tempFile, err := ioutil.TempFile("/tmp/images", "upload-*.jpg")
+			if err != nil {
+				fmt.Println(err)
+			}
+			defer tempFile.Close()
+
+			// read all of the contents of our uploaded file into a
+			// byte array
+			fileBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				fmt.Println(err)
+			}
+			// write this byte array to our temporary file
+			_, err = tempFile.Write(fileBytes)
+			if err != nil {
+				_, _ = w.Write(makeResponseObject(nil, err.Error()))
+				return
+			}
+			// return that we have successfully uploaded our file!
+			_, _ = w.Write(makeResponseObject(tempFile.Name(), nil))
 		},
 	}
 }

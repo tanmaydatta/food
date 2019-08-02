@@ -26,10 +26,18 @@ type HelloResp struct {
 	Msg string `json:"msg"`
 }
 
-type PredictReq struct {
-}
-
 type PredictResp struct {
 	Name       string `json:"name"`
 	Prediction string `json:"prediction"`
+}
+
+type UploadResp struct {
+	ImageName string `json:"name"`
+}
+
+type UploadReq struct {
+}
+
+type PredictReq struct {
+	ImageName string `json:"name"`
 }

@@ -22,5 +22,5 @@ import "github.com/tanmaydatta/food/dto"
 
 type API interface {
 	Hello(name string) (*dto.HelloResp, error)
-	Predict() (string, error)
+	Predict(name string) (string, error)
 }

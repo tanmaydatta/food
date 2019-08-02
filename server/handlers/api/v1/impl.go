@@ -34,7 +34,7 @@ func (i Impl) Hello(name string) (*dto.HelloResp, error) {
 	}, nil
 }
 
-func (i Impl) Predict() (string, error) {
-	out, err := exec.Command("sh", "-c", `/server/run.sh /images gobhi.jpg`).Output()
+func (i Impl) Predict(name string) (string, error) {
+	out, err := exec.Command("sh", "-c", fmt.Sprintf("/server/run.sh /tmp/images %s", name)).Output()
 	return string(out), err
 }

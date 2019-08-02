@@ -22,5 +22,5 @@ import "github.com/tanmaydatta/food/dto"
 
 type Service interface {
 	Hello(request *dto.HelloReq) (*dto.HelloResp, error)
-	Predict() (*dto.PredictResp, error)
+	Predict(req *dto.PredictReq) (*dto.PredictResp, error)
 }

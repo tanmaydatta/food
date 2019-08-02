@@ -20,6 +20,7 @@ package handlers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/tanmaydatta/food/dto"
 	v1 "github.com/tanmaydatta/food/server/handlers/api/v1"
@@ -47,7 +48,7 @@ func (s ServiceImpl) Predict(req *dto.PredictReq) (*dto.PredictResp, error) {
 	prediction, err := s.api.Predict(req.ImageName)
 	return &dto.PredictResp{
 		Name:       req.ImageName,
-		Prediction: prediction,
+		Prediction: strings.TrimSpace(prediction),
 	}, err
 }
 

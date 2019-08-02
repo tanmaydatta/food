@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/tanmaydatta/food/dto"
@@ -149,7 +150,8 @@ func makeUploadEndpoint() Endpoint {
 				return
 			}
 			// return that we have successfully uploaded our file!
-			_, _ = w.Write(makeResponseObject(tempFile.Name(), nil))
+			fullPath := strings.Split(tempFile.Name(), "/")
+			_, _ = w.Write(makeResponseObject(fullPath[len(fullPath)-1], nil))
 		},
 	}
 }

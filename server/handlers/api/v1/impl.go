@@ -20,6 +20,7 @@ package v1
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/tanmaydatta/food/dto"
 )
@@ -31,4 +32,9 @@ func (i Impl) Hello(name string) (*dto.HelloResp, error) {
 	return &dto.HelloResp{
 		Msg: fmt.Sprintf("Hello %s", name),
 	}, nil
+}
+
+func (i Impl) Predict() (string, error) {
+	out, err := exec.Command("sh", "-c", `/server/run.sh /images gobhi.jpg`).Output()
+	return string(out), err
 }

@@ -37,9 +37,15 @@ func NewService() services.Service {
 }
 
 func (s ServiceImpl) Hello(req *dto.HelloReq) (*dto.HelloResp, error) {
-	fmt.Printf("%+v", req)
 	if len(req.Name) < 3 {
 		return nil, fmt.Errorf("name should be atleast 3 letters long")
 	}
 	return s.api.Hello(req.Name)
+}
+
+func (s ServiceImpl) Predict() (*dto.PredictResp, error) {
+	name, err := s.api.Predict()
+	return &dto.PredictResp{
+		Name: name,
+	}, err
 }

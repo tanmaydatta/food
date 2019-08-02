@@ -29,6 +29,7 @@ import (
 type Endpoint struct {
 	Path    string
 	Handler func(http.ResponseWriter, *http.Request)
+	Methods []string
 }
 
 type response struct {
@@ -38,19 +39,21 @@ type response struct {
 
 func RegisterEndpoints(service Service, r *mux.Router) {
 	for _, e := range makeHTTPEndpoints(service) {
-		r.HandleFunc(e.Path, e.Handler)
+		r.HandleFunc(e.Path, e.Handler).Methods(e.Methods...)
 	}
 }
 
 func makeHTTPEndpoints(service Service) []Endpoint {
 	return []Endpoint{
 		makeHelloEndpoint(service),
+		makePredictEndpoint(service),
 	}
 }
 
 func makeHelloEndpoint(service Service) Endpoint {
 	return Endpoint{
-		Path: "/hello",
+		Path:    "/hello",
+		Methods: []string{http.MethodGet},
 		Handler: func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			keys, ok := r.URL.Query()["name"]
@@ -61,6 +64,23 @@ func makeHelloEndpoint(service Service) Endpoint {
 			}
 
 			resp, err := service.Hello(&dto.HelloReq{Name: keys[0]})
+			if err != nil {
+				_, _ = w.Write(makeResponseObject(nil, err.Error()))
+				return
+			}
+			_, _ = w.Write(makeResponseObject(resp, nil))
+		},
+	}
+}
+
+func makePredictEndpoint(service Service) Endpoint {
+	return Endpoint{
+		Path:    "/predict",
+		Methods: []string{http.MethodGet},
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+
+			resp, err := service.Predict()
 			if err != nil {
 				_, _ = w.Write(makeResponseObject(nil, err.Error()))
 				return

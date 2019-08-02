@@ -39,7 +39,7 @@ func NewServer(r *mux.Router) Server {
 	return Server{
 		Srv: &http.Server{
 			Handler: r,
-			Addr:    "127.0.0.1:8000",
+			Addr:    "0.0.0.0:8000",
 		},
 		Done: make(chan os.Signal, 1),
 	}

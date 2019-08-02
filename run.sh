@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-git pull
-./server
+git pull origin master
+./cmd/server/server

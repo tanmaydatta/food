@@ -51,7 +51,7 @@ func NewServer(r *mux.Router) Server {
 }
 
 func (s Server) start() {
-	signal.Notify(s.Done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(s.Done, os.Interrupt, syscall.SIGINT)
 
 	go func() {
 		if err := s.Srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

@@ -46,6 +46,10 @@ func (s ServiceImpl) Hello(req *dto.HelloReq) (*dto.HelloResp, error) {
 
 func (s ServiceImpl) Predict(req *dto.PredictReq) (*dto.PredictResp, error) {
 	prediction, err := s.api.Predict(req.ImageName)
+	go func() {
+		del, er := s.api.DeleteFile(req.ImageName)
+		fmt.Printf("Deleted res:%v, err:%v", del, er)
+	}()
 	return &dto.PredictResp{
 		Name:       req.ImageName,
 		Prediction: strings.TrimSpace(prediction),

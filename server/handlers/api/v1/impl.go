@@ -38,3 +38,8 @@ func (i Impl) Predict(name string) (string, error) {
 	out, err := exec.Command("sh", "-c", fmt.Sprintf("/server/run.sh /server/images %s", name)).Output()
 	return string(out), err
 }
+
+func (i Impl) DeleteFile(name string) (string, error) {
+	out, err := exec.Command("sh", "-c", fmt.Sprintf("rm /server/images/%s", name)).Output()
+	return string(out), err
+}

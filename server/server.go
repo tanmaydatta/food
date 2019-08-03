@@ -44,7 +44,7 @@ func NewServer(r *mux.Router) Server {
 	return Server{
 		Srv: &http.Server{
 			Handler: r,
-			Addr:    fmt.Sprintf(":%s", port),
+			Addr:    fmt.Sprintf("0.0.0.0:%s", port),
 		},
 		Done: make(chan os.Signal, 1),
 	}

@@ -131,7 +131,7 @@ func makeUploadEndpoint() Endpoint {
 
 			// Create a temporary file within our temp-images directory that follows
 			// a particular naming pattern
-			tempFile, err := ioutil.TempFile("/tmp/images", "upload-*.jpg")
+			tempFile, err := ioutil.TempFile("/server/images", "upload-*.jpg")
 			if err != nil {
 				fmt.Printf("Error in tempfile")
 				fmt.Println(err)

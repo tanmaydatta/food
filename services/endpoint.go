@@ -149,7 +149,7 @@ func makeUploadEndpoint() Endpoint {
 			// write this byte array to our temporary file
 			_, err = tempFile.Write(fileBytes)
 			if err != nil {
-				fmt.Printf("Error in write")
+				fmt.Printf("Error in write, %v", err)
 				_, _ = w.Write(makeResponseObject(nil, err.Error()))
 				return
 			}

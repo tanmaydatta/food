@@ -133,6 +133,7 @@ func makeUploadEndpoint() Endpoint {
 			// a particular naming pattern
 			tempFile, err := ioutil.TempFile("/tmp/images", "upload-*.jpg")
 			if err != nil {
+				fmt.Printf("Error in tempfile")
 				fmt.Println(err)
 			}
 			defer tempFile.Close()
@@ -141,11 +142,13 @@ func makeUploadEndpoint() Endpoint {
 			// byte array
 			fileBytes, err := ioutil.ReadAll(file)
 			if err != nil {
+				fmt.Printf("Error in readall")
 				fmt.Println(err)
 			}
 			// write this byte array to our temporary file
 			_, err = tempFile.Write(fileBytes)
 			if err != nil {
+				fmt.Printf("Error in write")
 				_, _ = w.Write(makeResponseObject(nil, err.Error()))
 				return
 			}

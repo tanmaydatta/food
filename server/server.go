@@ -23,8 +23,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/gorilla/mux"
 	"github.com/tanmaydatta/food/server/handlers"
@@ -51,16 +49,16 @@ func NewServer(r *mux.Router) Server {
 }
 
 func (s Server) start() {
-	signal.Notify(s.Done, os.Interrupt, syscall.SIGINT)
-
-	go func() {
-		if err := s.Srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
-	log.Print("Server Started: ", s.Srv.Addr)
-	<-s.Done
-	log.Print("Server Stopped")
+	//signal.Notify(s.Done, os.Interrupt, syscall.SIGINT)
+	log.Print("STarting server: ", s.Srv.Addr)
+	//go func() {
+	if err := s.Srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("listen: %s\n", err)
+	}
+	//}()
+	//log.Print("Server Started: ", s.Srv.Addr)
+	//<-s.Done
+	//log.Print("Server Stopped")
 }
 
 func (s Server) stop() {
